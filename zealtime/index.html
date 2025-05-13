@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <h1>Hello, $(myName) <span style="color: red;">$(myName)</span></h1>
+    <span>$(i)</span>
+    <input type="text" value="$(myName)" oninput="textChanged()">
+    <button onclick="alert('Hello, $(myName)')">Alert</button>
+    <button onclick="addMessage()">Add message</button>
+
+    <span>Server Status: <span style="color: $(statusColor);">$(statusText)</span> (Server is counting: $(counting))</span>
+
+    <div class="messages">
+        <div class="message" z="message">
+            <h2>$(username)</h2>
+            <p>$(content)</p>
+            <input type="text" value="$(content)" oninput="editMessage('$(zid)', this.value)">
+            <button onclick="deleteMessage('$(zid)')">Delete</button>
+            <button onclick="addSmiley('$(zid)')">Add smiley</button>
+            <div class="smiley" z="smiley-$(zid)">
+                😃
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="src/zealtime.js"></script>
+    <script src="app.js" defer></script>
+
+</body>
+</html>
