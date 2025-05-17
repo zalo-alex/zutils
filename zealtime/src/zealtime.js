@@ -20,7 +20,6 @@ window.z = new DeepProxy(states, handler);
 const stateListeners = new Set()
 const modifications = new Map()
 const attrModifications = new Map()
-const templateDatas = new Map()
 
 function renderElement(element, data) {
     element.childNodes.forEach(node => {
@@ -67,7 +66,7 @@ function render() { // TODO: Don't be dumb, only re render changed elements
 
     document.querySelectorAll('[zid]').forEach(el => {
         const zid = el.getAttribute("zid");
-        const data = templateDatas.get(zid);
+        const data = z[zid];
 
         el.querySelectorAll('*').forEach(el => {
             if (el.closest('[zid]').getAttribute("zid") != zid && el.getAttribute("zid") != zid) return
@@ -90,21 +89,43 @@ function randomId() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
-z.create = (template, data = {}) => {
+z.createTemplate = (template, data = {}) => {
     const templateElement = document.querySelector(`[z="${template}"]`);
     const clone = templateElement.cloneNode(true);
     const zid = randomId();
     clone.removeAttribute("z");
     clone.setAttribute("zid", zid);
-    templateElement.parentNode.appendChild(clone);
-    templateDatas.set(zid, data); // TODO: DATA SHOULD BE STORED IN z. AND REMOVE templateDatas FOREVER !
     z[zid] = data
+    return { clone, zid, templateElement }
+}
+
+z.create = (template, data = {}) => {
+    const { clone, templateElement } = z.createTemplate(template, data);
+    templateElement.parentNode.appendChild(clone);
+    render();
+}
+
+z.createAfter = (template, after, data = {}) => {
+    if (typeof after === "string") {
+        after = document.querySelector(after)
+    }
+    const { clone } = z.createTemplate(template, data);
+    after.after(clone);
+    render();
+}
+
+z.createIn = (template, parent, data = {}) => {
+    if (typeof parent === "string") {
+        parent = document.querySelector(parent)
+    }
+    const { clone } = z.createTemplate(template, data);
+    parent.appendChild(clone);
     render();
 }
 
 z.delete = (zid) => { // TODO: Should delete inner templates
     document.querySelector(`[zid="${zid}"]`).remove();
-    templateDatas.delete(zid);
+    delete z[zid];
 }
 
 z.connect = (url) => {

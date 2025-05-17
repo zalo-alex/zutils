@@ -33,4 +33,12 @@ function addSmiley(zid) {
     z.create(`smiley-${zid}`)
 }
 
-z.connect("ws://127.0.0.1:8765")
+// z.connect("ws://127.0.0.1:8765")
+
+z.createAfter("text", "#h1-content", {
+    "content": "Hello world from h1"
+})
+
+z.createIn("text", document.querySelector("#h2-container"), {
+    "content": "Hello world from h2"
+})
