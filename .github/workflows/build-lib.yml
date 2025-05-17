@@ -1,4 +1,4 @@
-name: Build JS Libraries
+name: Build and Commit JS Libraries
 
 on:
   push:
@@ -10,8 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Important for commits
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -30,8 +32,15 @@ jobs:
           npm install
           npm run build
 
-      - name: Upload final built JS files
-        uses: actions/upload-artifact@v4
-        with:
-          name: lib-js-files
-          path: lib/
+      - name: Commit /lib changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          git add lib/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update built JS files in /lib [auto]"
+            git push
+          fi
