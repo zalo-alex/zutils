@@ -33,7 +33,6 @@ zp.runPreprocessor = (selector, callback, outer) => {
 
 zp.runPreprocessors = () => {
     zp.preprocessors.forEach(preprocessor => {
-        console.log(preprocessor)
         zp.runPreprocessor(...preprocessor)
     })
 }

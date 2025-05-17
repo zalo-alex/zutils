@@ -5,13 +5,12 @@ z.statusText = "Offline"
 z.counting = 0
 
 function textChanged() {
-    // console.log(document.querySelector("input").value)
     z.myName = document.querySelector("input").value;
 }
 
-// setInterval(() => {
-//     z.i++
-// }, 1000)
+setInterval(() => {
+    z.i++
+}, 1000)
 
 function addMessage() {
     z.i++

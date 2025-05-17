@@ -22,7 +22,6 @@ export class Zocket {
 
     onmessage(message) {
         const data = JSON.parse(message.data)
-        console.log(data)
         if (data.z) {
             if (data.z === "set") {
                 Object.entries(data.variables).forEach(([key, value]) => {

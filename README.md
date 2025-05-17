@@ -6,9 +6,25 @@ A small lib to get quick and easy realtime HTML updates through states updates o
 
 *The goal is to make a lightweight react-like self-managed templates with a custom Websocket interface*
 
+### CDN
+
+[https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zealtime.js](https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zealtime.js)
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zealtime.js"></script>
+```
+
 ## ZProcess
 
 An easy way to create preprocessor for HTML
+
+### CDN
+
+[https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zprocess.js](https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zprocess.js)
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zprocess.js"></script>
+```
 
 ## Docs
 
