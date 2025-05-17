@@ -1,11 +1,18 @@
+"""
+This is a simple example of how to use zealtime with websockets
+It checks every 0.5 seconds if the file hello.txt exists
+You need to install the dependencies with `pip install websockets`
+You can run it with `python3 app.py`
+"""
+
 import asyncio
 import websockets
 import os
 import json
 
 connected_clients = set()
-CHECK_INTERVAL = 0.5  # seconds
-FILENAME = "/home/alex/hello.txt"
+CHECK_INTERVAL = 0.5
+FILENAME = "hello.txt"
 COUNTING = 0
 
 async def notify_clients(data: str):
@@ -54,9 +61,8 @@ async def handler(websocket):
 async def main():
     server = await websockets.serve(handler, "0.0.0.0", 8765)
     print("WebSocket server started on ws://0.0.0.0:8765")
-    await check_file_presence()  # This will block; we need to run it concurrently
+    await check_file_presence() 
 
-# Run both the server and the file watcher
 async def start():
     await asyncio.gather(
         main()

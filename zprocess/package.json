@@ -1,0 +1,8 @@
+{
+    "scripts": {
+        "build": "esbuild src/index.js --bundle --outfile=../lib/zprocess.js"
+    },
+    "dependencies": {
+        "esbuild": "^0.25.4"
+    }
+}
