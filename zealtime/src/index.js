@@ -78,7 +78,7 @@ function render() { // TODO: Don't be dumb, only re render changed elements
 function addStyles() {
     const style = document.createElement("style");
     style.innerHTML = `
-        [z] {
+        [z]:not([z-display]) {
             display: none;
         }
     `;
@@ -89,8 +89,12 @@ function randomId() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
+z.getTemplate = (template) => {
+    return document.querySelector(`[z="${template}"]`)
+}
+
 z.createTemplate = (template, data = {}) => {
-    const templateElement = document.querySelector(`[z="${template}"]`);
+    const templateElement = z.getTemplate(template);
     const clone = templateElement.cloneNode(true);
     const zid = randomId();
     clone.removeAttribute("z");
