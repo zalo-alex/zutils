@@ -26,6 +26,20 @@ An easy way to create preprocessor for HTML
 <script src="https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zprocess.js"></script>
 ```
 
+## ZPages
+
+Make A4 documents in HTML/CSS
+
+### CDN
+
+[https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zpages.js](https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zpages.js)  
+[https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zpages.css](https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zpages.css)
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zpages.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zpages.css">
+```
+
 ## Docs
 
 I'm the only user... no docs for now but you can look at the examples
