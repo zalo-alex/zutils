@@ -3,10 +3,10 @@ zp.pre(".text.red", ({html}) => `<span style="color: red">${html}</span>`)
 zp.pre(".text.blue", ({html}) => `<span style="color: blue">${html}</span>`)
 zp.pre(".text", ({outer}) => `<div style="border: 1px solid black">${outer}</div>`, outer=true)
 
-zp.pre(".list", ({lines}) => lines.map(t => `<li>${t}</li>`).join(""))
+zp.pre(".list", ({lines}) => lines.map(t => `<li>${t}</li>`))
 zp.pre(".list", ({html}) => `<ul>${html}</ul>`, outer=true)
 
-zp.pre(".AhHh", ({text}) => text.split("").map((t, i) => i % 2 == 1 ? t : t.toUpperCase()).join(""))
+zp.pre(".AhHh", ({text}) => text.split("").map((t, i) => i % 2 == 1 ? t : t.toUpperCase()))
 
 zp.pre(".l33t", ({text}) => text.replace(/a/g, "4").replace(/e/g, "3"))
 
