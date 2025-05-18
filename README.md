@@ -37,7 +37,7 @@ Make A4 documents in HTML/CSS
 
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zpages.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zpages.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zpages.css" crossorigin="anonymous">
 ```
 
 ## Docs
