@@ -48,15 +48,19 @@ window.addEventListener("load", () => {
     const pages = document.querySelectorAll("page")
     pages.forEach((page, index) => {
 
-        z.createIn("footer", page, {
-            "page": index + 1,
-            "pageTotal": pages.length
-        })
-
-        z.createIn("header", page, {
-            "page": index + 1,
-            "pageTotal": pages.length
-        })
+        if (!page.hasAttribute("no-header")) {
+            z.createIn("header", page, {
+                "page": index + 1,
+                "pageTotal": pages.length
+            })
+        }
+        
+        if (!page.hasAttribute("no-footer")) {
+            z.createIn("footer", page, {
+                "page": index + 1,
+                "pageTotal": pages.length
+            })
+        }
 
         const isOverflowing = page.scrollHeight > page.clientHeight || page.scrollWidth > page.clientWidth;
         console.log(page, isOverflowing)
