@@ -47,13 +47,15 @@ window.addEventListener("load", () => {
     const responsiveVars = {}
 
     for(const styleSheet of document.styleSheets) {
-        for(const rule of styleSheet.cssRules) {
-            const vars = [...rule.cssText.matchAll(/var\(--z-([^)]+)\)/g)];
-            vars.forEach(([_, key]) => {
-                if (responsiveVars[key]) return
-                responsiveVars[key] = pxToResponsive(parseInt(key))
-            })
-        }
+        try {
+            for(const rule of styleSheet.cssRules) {
+                const vars = [...rule.cssText.matchAll(/var\(--z-([^)]+)\)/g)];
+                vars.forEach(([_, key]) => {
+                    if (responsiveVars[key]) return
+                    responsiveVars[key] = pxToResponsive(parseInt(key))
+                })
+            }
+        } catch (e) { /* Probably cross-origin error */ }
     }
 
     const style = document.createElement("style");
