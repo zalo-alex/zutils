@@ -1,7 +1,7 @@
 z.headerHeight = 0
 z.footerHeight = 0
 
-zp.pre("#pages", ({element}) => {
+zp.pre("pages", ({element}) => {
     element.style += "; --footer-height: $(footerHeight)px; --header-height: $(headerHeight)px;";
     return element.outerHTML
 }, true)
@@ -24,26 +24,6 @@ function pxToResponsive(px) {
 }
 
 window.addEventListener("load", () => {
-    const pages = document.querySelectorAll(".page")
-    
-    pages.forEach((page, index) => {
-        const isOverflowing = page.scrollHeight > page.clientHeight || page.scrollWidth > page.clientWidth;
-
-        z.createIn("footer", page, {
-            "page": index + 1,
-            "pageTotal": pages.length
-        })
-
-        z.createIn("header", page, {
-            "page": index + 1,
-            "pageTotal": pages.length
-        })
-
-        if (isOverflowing) {
-            page.classList.add("overflowing");
-        }
-    })
-
     const responsiveVars = {}
 
     for(const styleSheet of document.styleSheets) {
@@ -64,6 +44,26 @@ window.addEventListener("load", () => {
     document.head.appendChild(style);
 
     setHeaderFooterHeight()
+    
+    const pages = document.querySelectorAll("page")
+    pages.forEach((page, index) => {
+
+        z.createIn("footer", page, {
+            "page": index + 1,
+            "pageTotal": pages.length
+        })
+
+        z.createIn("header", page, {
+            "page": index + 1,
+            "pageTotal": pages.length
+        })
+
+        const isOverflowing = page.scrollHeight > page.clientHeight || page.scrollWidth > page.clientWidth;
+        console.log(page, isOverflowing)
+        if (isOverflowing) {
+            page.classList.add("z-overflowing");
+        }
+    })
 })
 
 window.addEventListener("resize", (event) => {
