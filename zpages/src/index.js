@@ -6,8 +6,21 @@ zp.pre("pages", ({element}) => {
     return element.outerHTML
 }, true)
 
+let indexes = [0]
 zp.pre("h1, h2, h3, h4, h5, h6", ({element}) => {
     element.id = Math.random().toString(16).slice(2, 16)
+
+    if (!element.hasAttribute("no-index")) {
+        const level = parseInt(element.tagName.replace("H", ""))
+        if (indexes.length <= level) {
+            indexes.push(...Array(level - indexes.length).fill(0))
+        }
+        console.log(level, indexes)
+        indexes = indexes.slice(0, level)
+        indexes[level - 1]++
+        element.innerText = `${indexes[level - 1]}. ${element.innerText}`
+    }
+
     return element.outerHTML
 }, true)
 
