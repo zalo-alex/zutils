@@ -60,7 +60,7 @@ function render() { // TODO: Don't be dumb, only re render changed elements
     })
 
     document.querySelectorAll('*').forEach(el => {
-        if (el.closest('[zid]') !== null) return
+        if (el.closest('[zid]') !== null || el.closest("[z]") !== null) return
         renderElement(el, z)
     })
 
@@ -69,7 +69,11 @@ function render() { // TODO: Don't be dumb, only re render changed elements
         const data = z[zid];
 
         el.querySelectorAll('*').forEach(el => {
-            if (el.closest('[zid]').getAttribute("zid") != zid && el.getAttribute("zid") != zid) return
+            if (
+                (el.closest('[zid]').getAttribute("zid") != zid && 
+                el.getAttribute("zid") != zid) ||
+                el.closest("[z]") !== null
+            ) return
             renderElement(el, {...z, ...data, zid})
         })
     })
