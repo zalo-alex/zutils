@@ -24,8 +24,10 @@ const attrModifications = new Map()
 function renderElement(element, data) {
     element.childNodes.forEach(node => {
         if (node.nodeName === "#text" && /\$\(([^)]+)\)/.test(node.nodeValue)) {
-
-            modifications.set(node, node.nodeValue)
+            
+            if (!modifications.has(node)) {
+                modifications.set(node, node.nodeValue)
+            }
 
             node.nodeValue = node.nodeValue.replace(/\$\(([^)]+)\)/g, (_, key) => {
                 stateListeners.add(key);
@@ -103,6 +105,7 @@ z.createTemplate = (template, data = {}) => {
     const zid = randomId();
     clone.removeAttribute("z");
     clone.setAttribute("zid", zid);
+    clone.setAttribute("z-template", template);
     z[zid] = data
     return { clone, zid, templateElement }
 }
@@ -111,6 +114,7 @@ z.create = (template, data = {}) => {
     const { clone, templateElement } = z.createTemplate(template, data);
     templateElement.parentNode.appendChild(clone);
     render();
+    return clone
 }
 
 z.createAfter = (template, after, data = {}) => {
@@ -120,6 +124,7 @@ z.createAfter = (template, after, data = {}) => {
     const { clone } = z.createTemplate(template, data);
     after.after(clone);
     render();
+    return clone
 }
 
 z.createIn = (template, parent, data = {}) => {
@@ -129,6 +134,7 @@ z.createIn = (template, parent, data = {}) => {
     const { clone } = z.createTemplate(template, data);
     parent.appendChild(clone);
     render();
+    return clone
 }
 
 z.delete = (zid) => { // TODO: Should delete inner templates
@@ -138,6 +144,14 @@ z.delete = (zid) => { // TODO: Should delete inner templates
 
 z.connect = (url) => {
     return new Zocket(url)
+}
+
+z.internals = { // Shouldn't be used externally, exposed for specific use cases
+    renderElement,
+    render,
+    stateListeners,
+    modifications,
+    attrModifications
 }
 
 addStyles()
