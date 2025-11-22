@@ -1,13 +1,17 @@
 window.zp = {}
 zp.preprocessors = []
 
-zp.pre = (selector, callback, outer=false) => {
-    zp.preprocessors.push([selector, callback, outer])
+zp.pre = (selector, callback, outer=false, force_reprocess=false) => {
+    zp.preprocessors.push([selector, callback, outer, force_reprocess])
 }
 
-zp.runPreprocessor = (selector, callback, outer) => {
+zp.runPreprocessor = (selector, callback, outer, force_reprocess) => {
     const elements = document.querySelectorAll(selector)
     for (const element of elements) {
+        if (element.getAttribute("zp-processed") === "true" && !force_reprocess) {
+            continue
+        }
+
         const processed = callback({
             text: element.textContent.trim(),
             lines: element.textContent.trim().split("\n"),
@@ -28,6 +32,8 @@ zp.runPreprocessor = (selector, callback, outer) => {
         } else {
             element.innerHTML = html
         }
+
+        element.setAttribute("zp-processed", "true")
     }
 }
 
