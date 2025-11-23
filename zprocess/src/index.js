@@ -32,9 +32,11 @@ zp.runPreprocessor = (selector, callback, outer, force_reprocess) => {
         } else {
             element.innerHTML = html
         }
-
-        element.setAttribute("zp-processed", "true")
     }
+
+    document.querySelectorAll(selector).forEach(element => {
+        element.setAttribute("zp-processed", "true")
+    })
 }
 
 zp.runPreprocessors = () => {
