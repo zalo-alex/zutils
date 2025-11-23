@@ -1,17 +1,29 @@
 window.zp = {}
 zp.preprocessors = []
+zp.originals = new Map()
 
-zp.pre = (selector, callback, outer=false, force_reprocess=false) => {
-    zp.preprocessors.push([selector, callback, outer, force_reprocess])
+zp.pre = (selector, callback, outer=false) => {
+    zp.preprocessors.push([selector, callback, outer])
 }
 
-zp.runPreprocessor = (selector, callback, outer, force_reprocess) => {
-    const elements = document.querySelectorAll(selector)
-    for (const element of elements) {
-        if (element.getAttribute("zp-processed") === "true" && !force_reprocess) {
-            continue
+zp.runPreprocessor = (selector, callback, outer) => {
+    document.querySelectorAll(selector).forEach(element => {
+        if (!zp.originals.has(element)) {
+            zp.originals.set(element, outer ? element.outerHTML : element.innerHTML)
         }
 
+        const original = zp.originals.get(element)
+        if (original) {
+            if (outer) {
+                element.outerHTML = original
+            } else {
+                element.innerHTML = original
+            }
+        }
+    })
+
+    // Refetch elements, needed if outerHTML was changed
+    document.querySelectorAll(selector).forEach(element => {
         const processed = callback({
             text: element.textContent.trim(),
             lines: element.textContent.trim().split("\n"),
@@ -26,16 +38,12 @@ zp.runPreprocessor = (selector, callback, outer, force_reprocess) => {
         } else {
             html += processed
         }
-        
+
         if (outer) {
             element.outerHTML = html
         } else {
             element.innerHTML = html
         }
-    }
-
-    document.querySelectorAll(selector).forEach(element => {
-        element.setAttribute("zp-processed", "true")
     })
 }
 
