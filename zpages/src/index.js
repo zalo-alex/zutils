@@ -212,7 +212,7 @@ zpages.updatePages = () => {
 }
 
 window.addEventListener("load", () => {
-    loadPages()
+    zpages.updatePages()
 })
 
 window.addEventListener("resize", (event) => {
