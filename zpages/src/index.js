@@ -1,3 +1,5 @@
+window.zpages = {}
+
 z.headerHeight = 0
 z.footerHeight = 0
 
@@ -167,7 +169,7 @@ function pageBreak(page) {
     }
 }
 
-window.addEventListener("load", () => {
+zpages.updatePages = () => {
     const responsiveVars = {}
 
     for(const styleSheet of document.styleSheets) {
@@ -207,6 +209,10 @@ window.addEventListener("load", () => {
             pageBreak(page);
         }
     })
+}
+
+window.addEventListener("load", () => {
+    loadPages()
 })
 
 window.addEventListener("resize", (event) => {
