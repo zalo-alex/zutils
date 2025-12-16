@@ -125,3 +125,49 @@ pages {
         }
     }
 }
+
+@media print {
+    @page {
+        size: A4;
+        margin: 0;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+
+    body {
+        background-color: transparent;
+    }
+
+    pages {
+        gap: 0;
+        padding: 0;
+        filter: none;
+
+        page {
+            width: 100%;
+            max-height: none;
+            aspect-ratio: unset;
+            height: 100vh;
+            page-break-after: always;
+            break-after: page;
+            box-shadow: none;
+
+            &.z-overflowing {
+                outline: none;
+
+                &::after {
+                    display: none;
+                }
+            }
+
+            &:last-child {
+                page-break-after: auto;
+                break-after: auto;
+            }
+        }
+    }
+}
