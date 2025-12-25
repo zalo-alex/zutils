@@ -199,6 +199,9 @@ zpages.updatePages = () => {
         addHeaderFooter(page, index, pages.length);
     })
 
+    // Run all preprocessors (contents, headers indexing, ...)
+    zp.runPreprocessors()
+
     // Handle overflow after all headers/footers are added
     pages.forEach((page) => {
         const isOverflowing = isPageOverflowing(page);
