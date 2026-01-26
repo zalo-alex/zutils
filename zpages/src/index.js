@@ -199,7 +199,7 @@ zpages.updatePages = () => {
         addHeaderFooter(page, index, pages.length);
     })
 
-    // Run all preprocessors (contents, headers indexing, ...)
+    indexes = [0]
     zp.runPreprocessors()
 
     z.internals.render();
