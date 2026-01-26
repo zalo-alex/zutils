@@ -2,8 +2,8 @@ window.zp = {}
 zp.preprocessors = []
 zp.originals = new Map()
 
-zp.pre = (selector, callback, outer=false) => {
-    zp.preprocessors.push([selector, callback, outer])
+zp.pre = (selector, callback, outer=false, onWindowLoad=true) => {
+    zp.preprocessors.push([selector, callback, outer, onWindowLoad])
 }
 
 zp.runPreprocessor = (selector, callback, outer) => {
@@ -47,12 +47,13 @@ zp.runPreprocessor = (selector, callback, outer) => {
     })
 }
 
-zp.runPreprocessors = () => {
+zp.runPreprocessors = (windowLoad=false) => {
     zp.preprocessors.forEach(preprocessor => {
+        if (!preprocessor[3] && windowLoad) return
         zp.runPreprocessor(...preprocessor)
     })
 }
 
 window.addEventListener("load", () => {
-    zp.runPreprocessors()
+    zp.runPreprocessors(true)
 })

@@ -24,7 +24,7 @@ zp.pre("h1, h2, h3, h4, h5, h6", ({element}) => {
     }
 
     return element.outerHTML
-}, true)
+}, true, false)
 
 zp.pre("contents", ({element}) => {
     var html = `<div class="contents">`
@@ -36,7 +36,7 @@ zp.pre("contents", ({element}) => {
         html += `<a href="#${header.id}" class="level-${level} header"><span class="header-title">${header.textContent}</span><div class="separator"></div><span class="page-index">${getPageIndex(getPageFromElement(header))}</span></a>`
     }
     return html + "</div>"
-}, true)
+}, true, false)
 
 function isInPage(element) {
     return getPageFromElement(element) != null
@@ -191,7 +191,7 @@ zpages.updatePages = () => {
 
     setHeaderFooterHeight()
     
-    const pages = document.querySelectorAll("page")
+    let pages = document.querySelectorAll("page")
     z.pageTotal = pages.length;
 
     pages.forEach((page, index) => {
@@ -202,7 +202,10 @@ zpages.updatePages = () => {
     // Run all preprocessors (contents, headers indexing, ...)
     zp.runPreprocessors()
 
-    // Handle overflow after all headers/footers are added
+    z.internals.render();
+
+    // Query back the elements after preprocessors
+    pages = document.querySelectorAll("page")
     pages.forEach((page) => {
         const isOverflowing = isPageOverflowing(page);
 
