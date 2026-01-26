@@ -22,7 +22,7 @@ h3 {
     font-size: var(--z-24px);
 }
 
-span {
+span, p {
     font-size: var(--z-16px);
 }
 
