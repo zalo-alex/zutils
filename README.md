@@ -40,6 +40,15 @@ Make A4 documents in HTML/CSS
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zalo-alex/zutils/lib/zpages.css" crossorigin="anonymous">
 ```
 
-## Docs
+## Documentation
 
-I'm the only user... no docs for now but you can look at the examples
+Complete documentation is available in the [docs/](docs/) directory:
+
+- [Getting Started](docs/index.md) - Overview and quick start guide
+- [Zealtime](docs/zealtime.md) - Reactive templating and state management
+- [ZProcess](docs/zprocess.md) - HTML preprocessing engine
+- [ZPages](docs/zpages.md) - A4 document generation
+
+## Examples
+
+See the `examples/` folder in each component directory for working demos.
