@@ -38,6 +38,13 @@ zp.pre("contents", ({element}) => {
     return html + "</div>"
 }, true, false)
 
+function isFrozen() {
+    /* When exporting a rendered zpages .html file, you don't want it to rerender, to enable:
+            <script>zpagesFreeze = true;</script>
+    */
+    return !!window.zpagesFreeze
+}
+
 function isInPage(element) {
     return getPageFromElement(element) != null
 }
@@ -190,6 +197,9 @@ zpages.updatePages = () => {
     document.head.appendChild(style);
 
     setHeaderFooterHeight()
+
+    if (isFrozen()) return
+    // Everything after will not be ran if the page is frozen
     
     let pages = document.querySelectorAll("page")
     z.pageTotal = pages.length;
