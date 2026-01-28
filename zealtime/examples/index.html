@@ -10,7 +10,7 @@
     <div z="text"><span>$(content)</span></div>
     
     <h1>Hello, $(myName) <span style="color: red;">$(myName)</span></h1>
-    <span>$(i)</span>
+    <span>$(i) $((i > 10 ? 'More' : 'Less'))</span>
     <input type="text" value="$(myName)" oninput="textChanged()">
     <button onclick="alert('Hello, $(myName)')">Alert</button>
     <button onclick="addMessage()">Add message</button>
@@ -35,6 +35,12 @@
         <div id="h2-container">
             <h2>H2 Content</h2>
         </div>
+    </div>
+
+    <div>
+        <input type="text" value="$(expr)" oninput="z.expr = this.value">
+        <span>$(expr) = </span>
+        <span><b>$((eval(expr)))</b></span>
     </div>
 
     <script type="module" src="../../lib/zealtime.js"></script>
