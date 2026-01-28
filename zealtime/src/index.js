@@ -25,12 +25,11 @@ const templatePattern = /\$\(\(((?:(?!\$\(\().)+)\)\)|\$\(([^)]+)\)/g;
 
 function resolveTemplate(template, data) {
     return template.replace(templatePattern, (match, expr, key) => {
-        console.log(match, expr)
         if (expr !== undefined) {
             try {
                 return new Function('$', `with($){return(${expr})}`)(data);
-            } catch {
-                return match;
+            } catch (e) {
+                return e;
             }
         }
         stateListeners.add(key);
