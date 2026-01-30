@@ -128,7 +128,6 @@ function updatePageNumbers() {
             const zid = header.getAttribute("zid");
             if (z[zid]) {
                 z[zid].page = index + 1;
-                z[zid].pageTotal = pages.length;
             }
         });
 
@@ -136,7 +135,6 @@ function updatePageNumbers() {
             const zid = footer.getAttribute("zid");
             if (z[zid]) {
                 z[zid].page = index + 1;
-                z[zid].pageTotal = pages.length;
             }
         });
     });
@@ -145,15 +143,13 @@ function updatePageNumbers() {
 function addHeaderFooter(page, pageIndex, totalPages) {
     if (!page.hasAttribute("no-header")) {
         z.createIn("header", page, {
-            page: pageIndex + 1,
-            pageTotal: totalPages
+            page: pageIndex + 1
         });
     }
 
     if (!page.hasAttribute("no-footer")) {
         z.createIn("footer", page, {
-            page: pageIndex + 1,
-            pageTotal: totalPages
+            page: pageIndex + 1
         });
     }
 }
@@ -206,11 +202,15 @@ zpages.updatePages = () => {
 
     pages.forEach((page, index) => {
         page.setAttribute("zpage-index", index)
-        addHeaderFooter(page, index, pages.length);
     })
 
     indexes = [0]
     zp.runPreprocessors()
+
+    pages = document.querySelectorAll("page")
+    pages.forEach((page, index) => {
+        addHeaderFooter(page, index, pages.length);
+    })
 
     z.internals.render();
 
