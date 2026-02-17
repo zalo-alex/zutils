@@ -32,7 +32,7 @@ zp.pre("contents", ({element}) => {
     var html = `<div class="contents">`
     const headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6")
     for (const header of headers) {
-        if (!isInPage(header)) continue
+        if (!isInPage(header) || header.getAttribute("no-index") != null) continue
         const level = parseInt(header.localName.replace("h", ""))
         // TODO: Use Zealtime
         html += `<a href="#${header.id}" class="level-${level} header"><span class="header-title">${header.textContent}</span><div class="separator"></div><span class="page-index">${getPageIndex(getPageFromElement(header))}</span></a>`
