@@ -123,6 +123,13 @@ pages {
             height: 0px;
             border-bottom: 1px dashed #000;
         }
+
+        --contents-tab: 30px;
+        &.level-2 { margin-left: calc(var(--contents-tab) * 1); }
+        &.level-3 { margin-left: calc(var(--contents-tab) * 2); }
+        &.level-4 { margin-left: calc(var(--contents-tab) * 3); }
+        &.level-5 { margin-left: calc(var(--contents-tab) * 4); }
+        &.level-6 { margin-left: calc(var(--contents-tab) * 5); }
     }
 }
 
