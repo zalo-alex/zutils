@@ -67,6 +67,8 @@ function renderElement(element, data) {
 }
 
 function render() { // TODO: Don't be dumb, only re render changed elements
+    if (z.batchRendering) return // If batchrending, don't render now, it will be done later
+
     modifications.forEach((value, node) => {
         node.nodeValue = value;
     })
@@ -109,6 +111,13 @@ function addStyles() {
 
 function randomId() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+z.batchRender = (callback) => {
+    z.batchRendering = true
+    callback()
+    z.batchRendering = false
+    render()
 }
 
 z.getTemplate = (template) => {
