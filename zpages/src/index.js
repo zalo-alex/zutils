@@ -79,6 +79,10 @@ function isPageOverflowing(page) {
     return page.scrollHeight > page.clientHeight || page.scrollWidth > page.clientWidth;
 }
 
+function isPageOverflowingY(page) {
+    return page.scrollHeight > page.clientHeight;
+}
+
 function createNewPage(sourcePage) {
     const newPage = document.createElement("page");
 
@@ -167,7 +171,7 @@ function pageBreak(page) {
     updatePageNumbers();
 
     // Recursively handle overflow in the new page
-    if (isPageOverflowing(newPage)) {
+    if (isPageOverflowingY(newPage)) {
         pageBreak(newPage);
     }
 }
@@ -221,7 +225,7 @@ zpages.updatePages = () => {
 
         if (isOverflowing && !page.hasAttribute("no-overflow-indicator") && page.hasAttribute("no-page-break")) {
             page.classList.add("z-overflowing");
-        } else if (isOverflowing && !page.hasAttribute("no-overflow-indicator")) {
+        } else if (isOverflowing && !page.hasAttribute("no-overflow-indicator") && isPageOverflowingY()) {
             pageBreak(page);
         }
     })
