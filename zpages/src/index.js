@@ -231,7 +231,7 @@ zpages.updatePages = () => {
 
         if (isOverflowing && !page.hasAttribute("no-overflow-indicator") && page.hasAttribute("no-page-break")) {
             page.classList.add("z-overflowing");
-        } else if (isOverflowing && !page.hasAttribute("no-overflow-indicator") && isPageOverflowingY()) {
+        } else if (isOverflowing && !page.hasAttribute("no-overflow-indicator") && isPageOverflowingY(page)) {
             pageBreak(page);
         }
     })
