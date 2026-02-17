@@ -1,4 +1,6 @@
-window.zpages = {}
+window.zpages = {
+    maxRecursivePageBreaks: 20
+}
 
 z.headerHeight = 0
 z.footerHeight = 0
@@ -99,6 +101,7 @@ function createNewPage(sourcePage) {
 
 function moveContentToNewPage(sourcePage, targetPage) {
     const children = Array.from(sourcePage.children);
+    let moved = 0;
 
     // Move children backwards until source page no longer overflows
     for (let i = children.length - 1; i >= 0; i--) {
@@ -110,11 +113,14 @@ function moveContentToNewPage(sourcePage, targetPage) {
         }
 
         targetPage.insertBefore(child, targetPage.firstChild);
+        moved++
 
         if (!isPageOverflowing(sourcePage)) {
             break;
         }
     }
+
+    return moved
 }
 
 function updatePageNumbers() {
@@ -158,9 +164,9 @@ function addHeaderFooter(page, pageIndex, totalPages) {
     }
 }
 
-function pageBreak(page) {
+function pageBreak(page, i = 0) {
     const newPage = createNewPage(page);
-    moveContentToNewPage(page, newPage);
+    const movedItems = moveContentToNewPage(page, newPage);
 
     // Add header and footer to new page
     const pages = document.querySelectorAll("page");
@@ -171,8 +177,8 @@ function pageBreak(page) {
     updatePageNumbers();
 
     // Recursively handle overflow in the new page
-    if (isPageOverflowingY(newPage)) {
-        pageBreak(newPage);
+    if (isPageOverflowingY(newPage) && i < zpages.maxRecursivePageBreaks && movedItems > 1) {
+        pageBreak(newPage, i+1);
     }
 }
 
