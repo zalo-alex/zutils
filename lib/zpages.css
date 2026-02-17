@@ -50,11 +50,6 @@ header {
     left: 0;
 }
 
-img {
-    width: 70%;
-    margin: 20px auto;
-}
-
 .row {
     display: flex;
     margin: 10px auto;
