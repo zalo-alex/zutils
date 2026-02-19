@@ -99,6 +99,8 @@ function createNewPage(sourcePage) {
     return newPage;
 }
 
+const HEADER_FOOTER_SELECTOR = '[z="header"], [z="footer"], [zid][z-template="header"], [zid][z-template="footer"]';
+
 function moveContentToNewPage(sourcePage, targetPage) {
     const children = Array.from(sourcePage.children);
     let moved = 0;
@@ -107,8 +109,7 @@ function moveContentToNewPage(sourcePage, targetPage) {
     for (let i = children.length - 1; i >= 0; i--) {
         const child = children[i];
 
-        // Skip header and footer elements
-        if (child.matches('[z="header"], [z="footer"], [zid][z-template="header"], [zid][z-template="footer"]')) {
+        if (child.matches(HEADER_FOOTER_SELECTOR)) {
             continue;
         }
 
@@ -121,6 +122,47 @@ function moveContentToNewPage(sourcePage, targetPage) {
     }
 
     return moved
+}
+
+function trySplitContainer(sourcePage, targetPage) {
+    const contentElements = Array.from(targetPage.children).filter(
+        c => !c.matches(HEADER_FOOTER_SELECTOR)
+    );
+
+    if (contentElements.length !== 1 || contentElements[0].children.length === 0) return;
+
+    const container = contentElements[0];
+    const clone = container.cloneNode(false);
+    sourcePage.appendChild(clone);
+
+    splitContainerAcrossPages(container, clone, sourcePage);
+
+    if (clone.children.length === 0) clone.remove();
+    if (container.children.length === 0) container.remove();
+}
+
+// Recursively moves children from sourceContainer (next page) into targetContainer (current page)
+function splitContainerAcrossPages(sourceContainer, targetContainer, page) {
+    while (sourceContainer.children.length > 0) {
+        const child = sourceContainer.firstElementChild;
+        targetContainer.appendChild(child);
+
+        if (isPageOverflowing(page)) {
+            // This child doesn't fit - move it back
+            sourceContainer.insertBefore(child, sourceContainer.firstChild);
+
+            // Recurse: try to partially fit by splitting this child's children
+            if (child.children.length > 0) {
+                const childClone = child.cloneNode(false);
+                targetContainer.appendChild(childClone);
+                splitContainerAcrossPages(child, childClone, page);
+                if (childClone.children.length === 0) childClone.remove();
+                if (child.children.length === 0) child.remove();
+            }
+
+            break;
+        }
+    }
 }
 
 function updatePageNumbers() {
@@ -168,6 +210,16 @@ function pageBreak(page, i = 0) {
     const newPage = createNewPage(page);
     const movedItems = moveContentToNewPage(page, newPage);
 
+    if (movedItems === 0) {
+        newPage.remove();
+        return;
+    }
+
+    // If only one element was moved, try splitting its children across the two pages
+    if (movedItems === 1) {
+        trySplitContainer(page, newPage);
+    }
+
     // Add header and footer to new page
     const pages = document.querySelectorAll("page");
     const newPageIndex = Array.from(pages).indexOf(newPage);
@@ -177,7 +229,7 @@ function pageBreak(page, i = 0) {
     updatePageNumbers();
 
     // Recursively handle overflow in the new page
-    if (isPageOverflowingY(newPage) && i < zpages.maxRecursivePageBreaks && movedItems > 1) {
+    if (isPageOverflowingY(newPage) && i < zpages.maxRecursivePageBreaks) {
         pageBreak(newPage, i+1);
     }
 }
