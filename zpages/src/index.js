@@ -5,11 +5,6 @@ window.zpages = {
 z.headerHeight = 0
 z.footerHeight = 0
 
-zp.pre("pages", ({element}) => {
-    element.style += "; --footer-height: $(footerHeight)px; --header-height: $(headerHeight)px;";
-    return element.outerHTML
-}, true)
-
 let indexes = [0]
 zp.pre("h1, h2, h3, h4, h5, h6", ({element}) => {
     if (!isInPage(element)) return element.outerHTML
@@ -71,6 +66,20 @@ function getTemplateRect(template) {
 function setHeaderFooterHeight() {
     z.headerHeight = getTemplateRect("header").height
     z.footerHeight = getTemplateRect("footer").height
+
+    // Set these directly (not via a "$(...)" templated string on a "pages"
+    // preprocessor) so padding-top/padding-bottom reserve real space *before*
+    // pagination math runs. A templated value isn't substituted until the
+    // deferred zealtime render() call after batchRendering ends, i.e. after
+    // all pagination decisions already happened with var(--footer-height)
+    // invalid (computing to 0), giving every page one footer-height of
+    // phantom room - which is exactly enough to let the last bit of content
+    // silently overlap the real footer once it's actually rendered.
+    const pagesEl = document.querySelector("pages")
+    if (pagesEl) {
+        pagesEl.style.setProperty("--header-height", `${z.headerHeight}px`)
+        pagesEl.style.setProperty("--footer-height", `${z.footerHeight}px`)
+    }
 }
 
 function pxToResponsive(px) {
@@ -133,12 +142,23 @@ function hasLooseText(el) {
     );
 }
 
+// Grid/flex containers position children relative to each other - splitting their
+// children across two pages breaks that layout (e.g. a 3-column grid losing columns).
+function isUnsplittableLayout(el) {
+    const display = getComputedStyle(el).display;
+    return display.includes("grid") || display.includes("flex");
+}
+
+function isAtomic(el) {
+    return el.children.length === 0 || hasLooseText(el) || isUnsplittableLayout(el);
+}
+
 function trySplitContainer(sourcePage, targetPage) {
     const contentElements = Array.from(targetPage.children).filter(
         c => !c.matches(HEADER_FOOTER_SELECTOR)
     );
 
-    if (contentElements.length !== 1 || contentElements[0].children.length === 0 || hasLooseText(contentElements[0])) return;
+    if (contentElements.length !== 1 || isAtomic(contentElements[0])) return;
 
     const container = contentElements[0];
     const clone = container.cloneNode(false);
@@ -161,7 +181,7 @@ function splitContainerAcrossPages(sourceContainer, targetContainer, page) {
             sourceContainer.insertBefore(child, sourceContainer.firstChild);
 
             // Recurse: try to partially fit by splitting this child's children
-            if (child.children.length > 0 && !hasLooseText(child)) {
+            if (!isAtomic(child)) {
                 const childClone = child.cloneNode(false);
                 targetContainer.appendChild(childClone);
                 splitContainerAcrossPages(child, childClone, page);
@@ -224,10 +244,14 @@ function pageBreak(page, i = 0) {
         return;
     }
 
-    // If only one element was moved, try splitting its children across the two pages
-    if (movedItems === 1) {
-        trySplitContainer(page, newPage);
-    }
+    // trySplitContainer(page, newPage); // disabled: the backfill-optimization
+    // pass appends its clone to sourcePage via appendChild, which lands it
+    // *after* the page's already-appended header/footer in DOM order - and if
+    // it manages to pull any content back into that clone, that content
+    // renders past where the layout assumed the page's content would stop,
+    // silently overlapping the footer. Not required for correctness -
+    // moveContentToNewPage alone already keeps every page from overflowing,
+    // just with a bit less tight packing.
 
     // Add header and footer to new page
     const pages = document.querySelectorAll("page");
