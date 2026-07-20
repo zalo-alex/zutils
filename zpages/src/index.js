@@ -124,12 +124,21 @@ function moveContentToNewPage(sourcePage, targetPage) {
     return moved
 }
 
+// An element mixing loose text with inline elements (e.g. <p><i>Label</i> rest of text</p>)
+// can't be torn apart: firstElementChild-based recursion would move the element but
+// strand the sibling text node, corrupting the content across the split.
+function hasLooseText(el) {
+    return Array.from(el.childNodes).some(
+        n => n.nodeType === Node.TEXT_NODE && n.textContent.trim().length > 0
+    );
+}
+
 function trySplitContainer(sourcePage, targetPage) {
     const contentElements = Array.from(targetPage.children).filter(
         c => !c.matches(HEADER_FOOTER_SELECTOR)
     );
 
-    if (contentElements.length !== 1 || contentElements[0].children.length === 0) return;
+    if (contentElements.length !== 1 || contentElements[0].children.length === 0 || hasLooseText(contentElements[0])) return;
 
     const container = contentElements[0];
     const clone = container.cloneNode(false);
@@ -152,7 +161,7 @@ function splitContainerAcrossPages(sourceContainer, targetContainer, page) {
             sourceContainer.insertBefore(child, sourceContainer.firstChild);
 
             // Recurse: try to partially fit by splitting this child's children
-            if (child.children.length > 0) {
+            if (child.children.length > 0 && !hasLooseText(child)) {
                 const childClone = child.cloneNode(false);
                 targetContainer.appendChild(childClone);
                 splitContainerAcrossPages(child, childClone, page);
