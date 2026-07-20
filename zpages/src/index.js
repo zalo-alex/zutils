@@ -158,9 +158,10 @@ function trySplitContainer(sourcePage, targetPage) {
         c => !c.matches(HEADER_FOOTER_SELECTOR)
     );
 
-    if (contentElements.length !== 1 || isAtomic(contentElements[0])) return;
+    if (contentElements.length === 0) return;
 
     const container = contentElements[0];
+    if (isAtomic(container)) return;
     const clone = container.cloneNode(false);
     sourcePage.appendChild(clone);
 
@@ -244,14 +245,17 @@ function pageBreak(page, i = 0) {
         return;
     }
 
-    // trySplitContainer(page, newPage); // disabled: the backfill-optimization
-    // pass appends its clone to sourcePage via appendChild, which lands it
-    // *after* the page's already-appended header/footer in DOM order - and if
-    // it manages to pull any content back into that clone, that content
-    // renders past where the layout assumed the page's content would stop,
-    // silently overlapping the footer. Not required for correctness -
-    // moveContentToNewPage alone already keeps every page from overflowing,
-    // just with a bit less tight packing.
+    // Try splitting the boundary-adjacent element on the new page whenever it's
+    // still overflowing (not just when exactly one element moved) - requiring
+    // exactly one meant this almost never engaged for realistic content (any
+    // trailing sibling after a big splittable block bumps the count past 1),
+    // leaving oversized blocks (e.g. a rich-text block with dozens of tiny
+    // paragraphs) to move wholesale from page to page, still overflowing,
+    // instead of ever getting split. isAtomic() (text-tearing + grid/flex
+    // guards) still protects against unsafe splits.
+    if (movedItems === 1 || isPageOverflowing(newPage)) {
+        trySplitContainer(page, newPage);
+    }
 
     // Add header and footer to new page
     const pages = document.querySelectorAll("page");
